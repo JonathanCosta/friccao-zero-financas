@@ -1,0 +1,19 @@
+# Dependências e Builds
+node_modules/
+dist/
+
+# Segurança e Variáveis de Ambiente locais
+.env
+.env.local
+.env.production
+.env.development
+frontend/.env
+frontend/.env.production
+
+# Dados de desenvolvimento local
+scripts/mock-gas-data.json
+scripts/screenshots/
+
+# Arquivos do sistema
+.DS_Store
+*.log
