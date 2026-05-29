@@ -22,18 +22,20 @@ export default defineConfig({
         name: 'Financeiro PWA',
         short_name: 'Financeiro',
         description: 'Gestão financeira pessoal local-first',
+        lang: 'pt-BR',
         theme_color: '#16a34a',
         background_color: '#f9fafb',
         display: 'standalone',
-        start_url: '/',
+        start_url: './',
+        scope: './',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: './icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: './icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },

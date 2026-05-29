@@ -3,6 +3,7 @@ import { onMounted, ref, provide } from 'vue'
 import { useAuth } from './store/auth'
 import { db } from './db/dexie'
 import SetupDevice from './components/SetupDevice.vue'
+import InstallPrompt from './components/InstallPrompt.vue'
 
 const { state, init, isDeviceProvisioned, setDeviceToken } = useAuth()
 const ready = ref(false)
@@ -33,5 +34,6 @@ function onProvisioned(token: string) {
       @provisioned="onProvisioned"
     />
     <router-view v-else />
+    <InstallPrompt />
   </div>
 </template>
