@@ -39,9 +39,12 @@ function jsonReply(res, status, data) {
   const body = JSON.stringify(data)
   res.writeHead(status, {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': 'http://localhost:5173',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
   })
   res.end(body)
 }
@@ -49,9 +52,12 @@ function jsonReply(res, status, data) {
 const server = http.createServer((req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'http://localhost:5173',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'no-referrer',
     })
     res.end()
     return
@@ -79,17 +85,17 @@ const server = http.createServer((req, res) => {
       } else if (action === 'sync') {
         handleSync(res, dados)
       } else {
-        jsonReply(res, 400, { erro: 'Ação desconhecida: ' + action })
+        jsonReply(res, 400, { erro: 'acao_invalida' })
       }
     } catch (e) {
-      jsonReply(res, 400, { erro: 'JSON inválido: ' + e.message })
+      jsonReply(res, 400, { erro: 'requisicao_invalida' })
     }
   })
 })
 
 function handleProvision(res, dados) {
   if (!dados.chave) {
-    jsonReply(res, 401, { erro: 'Chave de instalação inválida' })
+    jsonReply(res, 401, { erro: 'nao_autorizado' })
     return
   }
 
@@ -118,6 +124,13 @@ function handleProvision(res, dados) {
 
 function handleSync(res, dados) {
   if (!dados.token) {
+    jsonReply(res, 401, { erro: 'nao_autorizado' })
+    return
+  }
+
+  // ⚠️ Valida token contra dispositivos conhecidos (consistente com produção)
+  const dispositivo = banco.dispositivos.find((d) => d.token_acesso === dados.token)
+  if (!dispositivo) {
     jsonReply(res, 401, { erro: 'token_invalido' })
     return
   }
@@ -129,7 +142,10 @@ function handleSync(res, dados) {
     for (const cat of dados.categorias) {
       const idx = banco.categorias.findIndex((c) => c.categoria_id === cat.categoria_id)
       if (idx >= 0) {
-        if (cat.criado_em > banco.categorias[idx].criado_em) {
+        // ⚠️ Usa atualizado_em para detectar edições (consistente com Sync.gs)
+        const tsLocal = banco.categorias[idx].atualizado_em || banco.categorias[idx].criado_em
+        const tsRemoto = cat.atualizado_em || cat.criado_em
+        if (tsRemoto > tsLocal) {
           banco.categorias[idx] = cat
           updates++
         }
@@ -162,13 +178,6 @@ function handleSync(res, dados) {
   jsonReply(res, 200, { inserts, updates, sucesso: true })
 }
 
-server.listen(PORT,'0.0.0.0', () => {
-  console.log(`
-╔══════════════════════════════════════════╗
-║  Mock GAS Server rodando                ║
-║  http://localhost:${PORT}                    ║
-║                                          ║
-║  Dados salvos em: mock-gas-data.json    ║
-╚══════════════════════════════════════════╝
-  `)
+server.listen(PORT, '127.0.0.1', () => {
+  console.log(`[MOCK] Servidor GAS simulado ativo em http://127.0.0.1:${PORT}`)
 })

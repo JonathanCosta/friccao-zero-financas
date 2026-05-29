@@ -141,8 +141,9 @@ async function testProvisionamento(page) {
   await page.waitForSelector('input[placeholder="Chave de instalação"]', { timeout: 5000 })
   await waitForText(page, 'Modo desenvolvimento', 3000)
 
+  const CHAVE_TESTE = process.env.CHAVE_TESTE || 'teste123'
   const pwdInput = await page.waitForSelector('input[type="password"]')
-  await pwdInput.type('teste123')
+  await pwdInput.type(CHAVE_TESTE)
 
   await page.click('button[type="submit"]')
   await sleep(2000)
@@ -322,28 +323,20 @@ async function testSync(page) {
 }
 
 async function testAutoLock(page) {
-  // CORREÇÃO: Primeiro navega e garante que está no Dashboard ativo
-  await page.goto(`${BASE}/#/dashboard`, { waitUntil: 'networkidle0' })
-  await sleep(1000)
-
-  // Executa a simulação do encerramento de visibilidade na página atual (sem resetar com page.goto depois)
+  // Simula o usuário fechando/minimizando a aba
   await page.evaluate(() => {
     Object.defineProperty(document, 'hidden', { get: () => true, configurable: true })
     document.dispatchEvent(new Event('visibilitychange'))
   })
   await sleep(1000)
 
-  // Força uma reconfiguração de rota interna ou clique para ativar a tranca global do router guard
+  // Recarrega em /#/ (estado fresco) e tenta acessar o dashboard
   await page.goto(`${BASE}/#/`, { waitUntil: 'networkidle0' })
   await clickByText(page, 'Relatórios')
-  await sleep(1000)
 
-  const pinLogin = await findByTextOnce(page, 'Digite seu PIN')
-  if (pinLogin) {
-    ok('Auto-lock: PIN exigido após visibilitychange')
-  } else {
-    fail('Auto-lock: PIN não foi exigido')
-  }
+  // Aguarda o modal de login PIN aparecer (com retry até 5s)
+  await waitForText(page, 'Digite seu PIN', 5000)
+  ok('Auto-lock: PIN exigido após visibilitychange')
 }
 
 async function testOfflineMode(page) {
@@ -384,7 +377,7 @@ async function main() {
   // CORREÇÃO: Removido o executablePath hardcoded para usar o binário nativo do ecossistema do Puppeteer
   const browser = await puppeteer.launch({
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: process.env.PUPPETEER_SANDBOX === '1' ? [] : ['--no-sandbox', '--disable-setuid-sandbox'],
   })
   const page = await browser.newPage()
   page.setDefaultTimeout(10000)

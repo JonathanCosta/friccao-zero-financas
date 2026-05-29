@@ -75,6 +75,7 @@ function onBlur() {
       type="text"
       placeholder="Categoria"
       autocomplete="off"
+      maxlength="100"
       @input="onInput"
       @focus="onInput"
       @blur="onBlur"

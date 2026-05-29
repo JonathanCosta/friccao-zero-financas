@@ -15,6 +15,7 @@ const state = reactive<AuthState>({
 })
 
 let idleTimer: ReturnType<typeof setTimeout> | null = null
+let isInitialized = false
 
 const IDLE_TIMEOUT = 3 * 60 * 1000
 
@@ -27,6 +28,8 @@ function resetIdleTimer() {
 
 export function useAuth() {
   function init() {
+    if (isInitialized) return
+    isInitialized = true
     state.deviceToken = localStorage.getItem('device_token')
     state.pinHash = localStorage.getItem('pin_hash')
     setupVisibilityListener()
@@ -68,15 +71,12 @@ export function useAuth() {
   }
 
   async function setPin(pin: string) {
-    const hash = await sha256(pin)
-    state.pinHash = hash
-    localStorage.setItem('pin_hash', hash)
+    await registrarNovoPin(pin)
+    state.pinHash = localStorage.getItem('pin_hash')
   }
 
   async function validatePin(pin: string): Promise<boolean> {
-    if (!state.pinHash) return false
-    const hash = await sha256(pin)
-    return hash === state.pinHash
+    return validarPin(pin)
   }
 
   function authorize() {
@@ -106,6 +106,8 @@ export function useAuth() {
     isDeviceProvisioned,
     setPin,
     validatePin,
+    registrarNovoPin,
+    validarPin,
     authorize,
     deauthorize,
     requestAuthorization,
@@ -114,18 +116,33 @@ export function useAuth() {
 }
 
 async function sha256(message: string): Promise<string> {
-  if (crypto.subtle) {
-    const encoder = new TextEncoder()
-    const data = encoder.encode(message)
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-    const hashArray = Array.from(new Uint8Array(hashBuffer))
-    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  if (!window.crypto || !crypto.subtle) {
+    throw new Error('Ambiente inseguro detectado. O aplicativo exige criptografia nativa via HTTPS.')
   }
-  let hash = 0
-  for (let i = 0; i < message.length; i++) {
-    const char = message.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash |= 0
-  }
-  return Math.abs(hash).toString(16).padStart(8, '0')
+  const msgBuffer = new TextEncoder().encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+export async function registrarNovoPin(pin: string): Promise<void> {
+  const array = new Uint32Array(4)
+  window.crypto.getRandomValues(array)
+  const salt = Array.from(array).map(b => b.toString(16)).join('').slice(0, 16)
+
+  const hash = await sha256(salt + pin)
+
+  localStorage.setItem('pin_salt', salt)
+  localStorage.setItem('pin_hash', hash)
+  state.pinHash = hash
+}
+
+export async function validarPin(pinTentativa: string): Promise<boolean> {
+  const salt = localStorage.getItem('pin_salt')
+  const hashSalvo = localStorage.getItem('pin_hash')
+
+  if (!salt || !hashSalvo) return false
+
+  const hashTentativa = await sha256(salt + pinTentativa)
+  return hashTentativa === hashSalvo
 }

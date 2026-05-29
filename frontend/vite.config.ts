@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   server: {
-    host: true,
+    host: process.env.VITE_ALLOW_EXTERNAL_HOST?.toLowerCase() === 'true' ? '0.0.0.0' : '127.0.0.1',
     proxy: {
       '/gas-api': {
         target: 'http://localhost:3100',

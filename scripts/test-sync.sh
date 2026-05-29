@@ -8,7 +8,7 @@ CHAVE="${CHAVE:-MINHA_CHAVE_SECRETA}"
 echo "=== 1. Provisionamento com chave válida ==="
 curl -s -X POST "$GAS_URL" \
   -H "Content-Type: text/plain" \
-  -d "{\"action\":\"provision\",\"chave\":\"$CHAVE\",\"nome_dispositivo\":\"Teste curl\"}"
+  -d "$(jq -n --arg chave "$CHAVE" '{action: "provision", chave: $chave, nome_dispositivo: "Teste curl"}')"
 echo ""
 
 echo ""

@@ -33,7 +33,8 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build -- --base=/friccao-zero-financas/
+      # B-4: Base path dinâmico a partir do nome do repositório
+      - run: npm run build -- --base=/${{ github.event.repository.name }}/
         env:
           VITE_GAS_URL: ${{ secrets.VITE_GAS_URL }}
 

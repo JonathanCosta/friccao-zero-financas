@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { db, type Movimentacao, type Categoria } from '../db/dexie'
 import { formatCurrency, formatDateBR } from '../utils/formatters'
+import { sanitizeLabel } from '../utils/sanitize'
 import VueApexCharts from 'vue3-apexcharts'
 import SyncButton from '../components/SyncButton.vue'
 import Toast from '../components/Toast.vue'
@@ -61,7 +62,7 @@ const gastosPorCategoria = computed(() => {
   }
   return Array.from(map.entries())
     .map(([id, total]) => ({
-      categoria: categorias.value.find((c) => c.categoria_id === id)?.nome ?? 'Sem categoria',
+      categoria: sanitizeLabel(categorias.value.find((c) => c.categoria_id === id)?.nome ?? 'Sem categoria'),
       total,
     }))
     .sort((a, b) => b.total - a.total)
@@ -141,7 +142,7 @@ const despesasMes = computed(() =>
 )
 
 function nomeCategoria(id: string): string {
-  return categorias.value.find((c) => c.categoria_id === id)?.nome ?? '—'
+  return sanitizeLabel(categorias.value.find((c) => c.categoria_id === id)?.nome ?? '—')
 }
 
 function iniciarEdicao(m: Movimentacao) {
@@ -244,7 +245,7 @@ async function confirmarExclusao(id: string) {
             class="px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition"
           >
             <div v-if="editando?.transacao_id === m.transacao_id" class="flex-1 space-y-2">
-              <input v-model="editando.descricao" class="w-full px-2 py-1 border rounded text-sm" />
+              <input v-model="editando.descricao" maxlength="100" class="w-full px-2 py-1 border rounded text-sm" />
               <input v-model="editando.valor" type="number" step="0.01" class="w-full px-2 py-1 border rounded text-sm" />
               <input v-model="editando.data_transacao" type="date" class="w-full px-2 py-1 border rounded text-sm" />
               <div class="flex gap-2">

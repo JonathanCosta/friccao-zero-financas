@@ -1,6 +1,7 @@
 /**
  * Auth.gs — Provisionamento de dispositivos e validação de tokens.
  * O token é recebido DENTRO do corpo JSON (nunca do header Authorization).
+ * A chave de provisionamento é comparada em TEMPO CONSTANTE (M-2).
  */
 
 var SHEET_DISPOSITIVOS = 'dispositivos';
@@ -10,14 +11,14 @@ var COL_NOME_DISPOSITIVO = 1;
 var COL_TOKEN_ACESSO = 2;
 var COL_CRIADO_EM = 3;
 
+function verificarChaveMestra(chaveInformada) {
+  var chaveSecreta = PropertiesService.getScriptProperties().getProperty('CHAVE_SECRETA');
+  if (!chaveSecreta) return false;
+  // M-2: SecureCompare mitiga ataques de temporização
+  return Utilities.secureCompare(chaveInformada, chaveSecreta);
+}
+
 function doProvision(dados) {
-  var chaveInformada = dados.chave || '';
-  var chaveSecreta = getSecretKey();
-
-  if (chaveInformada !== chaveSecreta) {
-    return { erro: 'Chave de instalação inválida' };
-  }
-
   var nomeDispositivo = dados.nome_dispositivo || 'Desconhecido';
   var token = gerarToken();
   var agora = new Date().toISOString();
@@ -53,10 +54,6 @@ function validateToken(token) {
     console.error('Erro ao validar token: ' + e.message);
   }
   return null;
-}
-
-function getSecretKey() {
-  return PropertiesService.getScriptProperties().getProperty('INSTALLATION_SECRET_KEY') || '';
 }
 
 function gerarToken() {

@@ -23,13 +23,51 @@ var COL_DELETADO_EM = 7;
 var COL_ORIGEM_REGISTRO = 8;
 var COL_COMPROVANTE_URL = 9;
 
+// CORREÇÃO: Função auxiliar para garantir uma comparação de datas segura e precisa
+function obterTimestamp(valorData) {
+  if (valorData instanceof Date) {
+    return valorData.getTime();
+  }
+  if (!valorData) return 0;
+  return new Date(valorData).getTime();
+}
+
+function validarCategoria(cat, erros) {
+  if (typeof cat.categoria_id !== 'string' || !cat.categoria_id) {
+    erros.push('categoria_id invalido'); return false;
+  }
+  if (typeof cat.nome !== 'string' || cat.nome.length > 100) {
+    erros.push('nome invalido ou muito longo: ' + cat.categoria_id); return false;
+  }
+  if (['entrada','saida','misto'].indexOf(cat.tipo) < 0) {
+    erros.push('tipo invalido: ' + cat.categoria_id); return false;
+  }
+  return true;
+}
+
+function validarMovimentacao(mov, erros) {
+  if (typeof mov.transacao_id !== 'string' || !mov.transacao_id) {
+    erros.push('transacao_id invalido'); return false;
+  }
+  if (typeof mov.descricao !== 'string' || mov.descricao.length > 200) {
+    erros.push('descricao invalida ou muito longa: ' + mov.transacao_id); return false;
+  }
+  if (typeof mov.valor !== 'number' || !isFinite(mov.valor)) {
+    erros.push('valor invalido: ' + mov.transacao_id); return false;
+  }
+  if (mov.comprovante_url && typeof mov.comprovante_url !== 'string') {
+    erros.push('comprovante_url invalido: ' + mov.transacao_id); return false;
+  }
+  return true;
+}
+
 function doSync(dados, dispositivo) {
   var resultado = { inserts: 0, updates: 0, erros: [] };
 
   criarAbaCategoriasSeNecessario();
 
   if (dados.categorias && dados.categorias.length > 0) {
-    var resultadoCat = upsertCategorias(dados.categorias);
+    var resultadoCat = upsertCategorias(dados.categorias, resultado.erros);
     resultado.inserts += resultadoCat.inserts;
     resultado.updates += resultadoCat.updates;
   }
@@ -37,7 +75,7 @@ function doSync(dados, dispositivo) {
   criarAbaMovimentacoesSeNecessario();
 
   if (dados.movimentacoes && dados.movimentacoes.length > 0) {
-    var resultadoMov = upsertMovimentacoes(dados.movimentacoes);
+    var resultadoMov = upsertMovimentacoes(dados.movimentacoes, resultado.erros);
     resultado.inserts += resultadoMov.inserts;
     resultado.updates += resultadoMov.updates;
   }
@@ -59,21 +97,24 @@ function criarAbaMovimentacoesSeNecessario() {
   ]);
 }
 
-function upsertCategorias(categorias) {
+function upsertCategorias(categorias, erros) {
   var sheet = getSheet(SHEET_CATEGORIAS);
   var inserts = 0, updates = 0;
 
   for (var i = 0; i < categorias.length; i++) {
     var cat = categorias[i];
-    if (!cat.categoria_id) continue;
+    if (!validarCategoria(cat, erros)) continue;
 
     var linha = findRowByKey(sheet, COL_CATEGORIA_ID, cat.categoria_id);
 
     if (linha) {
       var linhaData = sheet.getRange(linha, 1, 1, 4).getValues()[0];
-      var criadoEm = linhaData[COL_CAT_CRIADO_EM];
+      
+      // CORREÇÃO: Conversão protetiva para timestamp numérico
+      var criadoEmPlanilha = obterTimestamp(linhaData[COL_CAT_CRIADO_EM]);
+      var criadoEmFrontend = obterTimestamp(cat.criado_em);
 
-      if (cat.criado_em > criadoEm) {
+      if (criadoEmFrontend > criadoEmPlanilha) {
         updateRow(sheet, linha, [
           cat.categoria_id, cat.nome, cat.tipo, cat.criado_em
         ]);
@@ -90,21 +131,24 @@ function upsertCategorias(categorias) {
   return { inserts: inserts, updates: updates };
 }
 
-function upsertMovimentacoes(movimentacoes) {
+function upsertMovimentacoes(movimentacoes, erros) {
   var sheet = getSheet(SHEET_MOVIMENTACOES);
   var inserts = 0, updates = 0;
 
   for (var i = 0; i < movimentacoes.length; i++) {
     var mov = movimentacoes[i];
-    if (!mov.transacao_id) continue;
+    if (!validarMovimentacao(mov, erros)) continue;
 
     var linha = findRowByKey(sheet, COL_TRANSACAO_ID, mov.transacao_id);
 
     if (linha) {
       var linhaData = sheet.getRange(linha, 1, 1, 10).getValues()[0];
-      var atualizadoEm = linhaData[COL_ATUALIZADO_EM];
+      
+      // CORREÇÃO: Conversão protetiva para timestamp numérico evitando falhas de string vs Date
+      var atualizadoEmPlanilha = obterTimestamp(linhaData[COL_ATUALIZADO_EM]);
+      var atualizadoEmFrontend = obterTimestamp(mov.atualizado_em);
 
-      if (mov.atualizado_em > atualizadoEm) {
+      if (atualizadoEmFrontend > atualizadoEmPlanilha) {
         updateRow(sheet, linha, [
           mov.transacao_id, mov.descricao, mov.valor, mov.categoria_id,
           mov.data_transacao, mov.criado_em, mov.atualizado_em, mov.deletado_em || '',

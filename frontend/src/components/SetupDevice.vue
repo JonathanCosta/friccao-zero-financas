@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { CONFIG } from '../config'
+import { generateUUID } from '../utils/uuid'
 import { KeyRound, Loader2, WifiOff, Bug } from '@lucide/vue'
 
 const emit = defineEmits<{
@@ -15,6 +16,10 @@ const erro = ref('')
 async function confirmar() {
   if (!chave.value.trim()) {
     erro.value = 'Informe a chave de instalação'
+    return
+  }
+  if (chave.value.trim().length > 100) {
+    erro.value = 'Chave excede o limite máximo de 100 caracteres'
     return
   }
 
@@ -33,7 +38,7 @@ async function confirmar() {
       body: JSON.stringify({
         action: 'provision',
         chave: chave.value.trim(),
-        nome_dispositivo: navigator.userAgent.slice(0, 100),
+        nome_dispositivo: 'web',
       }),
     })
 
@@ -56,10 +61,10 @@ async function confirmar() {
   }
 }
 
+// M-4: Token criptograficamente seguro via randomUUID em vez de charCode + timestamp
+// M-8: Sem fingerprint de navegador — nome_dispositivo fixo como 'web'
 function provisionarLocal() {
-  const raw = chave.value.trim()
-  const hash = raw.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-  const token = `dev-${hash}-${Date.now()}`
+  const token = generateUUID()
   emit('provisioned', token)
 }
 
@@ -101,6 +106,7 @@ function continuarOffline() {
             type="password"
             placeholder="Chave de instalação"
             autocomplete="off"
+            maxlength="100"
             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-center text-lg tracking-widest"
             :disabled="loading"
           />

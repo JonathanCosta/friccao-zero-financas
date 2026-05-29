@@ -8,7 +8,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { state, setPin, validatePin, authorize } = useAuth()
+const { state, authorize, registrarNovoPin, validarPin } = useAuth()
 
 const step = ref<'create' | 'confirm' | 'login'>(
   state.pinHash ? 'login' : 'create'
@@ -68,7 +68,7 @@ function handleComplete(pinValue: string) {
     nextTick(() => inputRefs.value[0]?.focus())
   } else if (step.value === 'confirm') {
     if (pinValue === createPin.value) {
-      setPin(pinValue)
+      registrarNovoPin(pinValue)
       authorize()
       emit('authorized')
     } else {
@@ -79,7 +79,7 @@ function handleComplete(pinValue: string) {
       nextTick(() => inputRefs.value[0]?.focus())
     }
   } else if (step.value === 'login') {
-    validatePin(pinValue).then((ok) => {
+    validarPin(pinValue).then((ok) => {
       if (ok) {
         authorize()
         emit('authorized')
