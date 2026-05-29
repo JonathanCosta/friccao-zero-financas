@@ -13,9 +13,24 @@ var COL_CRIADO_EM = 3;
 
 function verificarChaveMestra(chaveInformada) {
   var chaveSecreta = PropertiesService.getScriptProperties().getProperty('CHAVE_SECRETA');
-  if (!chaveSecreta) return false;
-  // M-2: SecureCompare mitiga ataques de temporização
-  return Utilities.secureCompare(chaveInformada, chaveSecreta);
+
+  if (!chaveSecreta || !chaveInformada) {
+    return false;
+  }
+
+  var strA = String(chaveInformada);
+  var strB = String(chaveSecreta);
+
+  if (strA.length !== strB.length) {
+    return false;
+  }
+
+  var resultado = 0;
+  for (var i = 0; i < strA.length; i++) {
+    resultado |= strA.charCodeAt(i) ^ strB.charCodeAt(i);
+  }
+
+  return resultado === 0;
 }
 
 function doProvision(dados) {
