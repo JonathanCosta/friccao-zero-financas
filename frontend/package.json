@@ -17,6 +17,9 @@
     "vue-router": "^4.6.4",
     "vue3-apexcharts": "^1.11.1"
   },
+  "overrides": {
+    "@babel/core": "7.29.6"
+  },
   "devDependencies": {
     "@types/node": "^24.12.3",
     "@vitejs/plugin-vue": "^6.0.6",
