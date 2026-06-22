@@ -56,7 +56,7 @@ async function sync() {
   >
     <RotateCw
       class="w-4 h-4"
-      :class="syncing ? 'animate-spin text-primary-500' : ''"
+      :class="syncing ? 'animate-spin text-brand-sync' : ''"
     />
     {{ syncing ? 'Sincronizando...' : 'Sincronizar' }}
   </button>

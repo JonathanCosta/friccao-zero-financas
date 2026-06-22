@@ -79,7 +79,7 @@ function onBlur() {
       @input="onInput"
       @focus="onInput"
       @blur="onBlur"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-sm"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-income focus:ring-2 focus:ring-brand-income/20 outline-none transition text-sm"
     />
 
     <ul
@@ -90,12 +90,12 @@ function onBlur() {
         v-for="cat in filtered"
         :key="cat.categoria_id"
         @mousedown.prevent="select(cat)"
-        class="px-4 py-2.5 text-sm hover:bg-primary-50 cursor-pointer transition flex items-center justify-between"
+        class="px-4 py-2.5 text-sm hover:bg-brand-income/5 cursor-pointer transition flex items-center justify-between"
       >
         <span>{{ cat.nome }}</span>
         <span
           class="text-xs px-2 py-0.5 rounded-full"
-          :class="cat.tipo === 'entrada' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+          :class="cat.tipo === 'entrada' ? 'bg-brand-income/20 text-brand-income' : 'bg-brand-expense/20 text-brand-expense'"
         >
           {{ cat.tipo }}
         </span>
@@ -104,7 +104,7 @@ function onBlur() {
       <li
         v-if="showCreate"
         @mousedown.prevent="criar"
-        class="px-4 py-2.5 text-sm hover:bg-primary-50 cursor-pointer transition flex items-center gap-2 text-primary-600 font-medium border-t border-gray-100"
+        class="px-4 py-2.5 text-sm hover:bg-brand-income/5 cursor-pointer transition flex items-center gap-2 text-brand-income font-medium border-t border-gray-100"
       >
         <Plus class="w-4 h-4" />
         Criar "{{ query }}"

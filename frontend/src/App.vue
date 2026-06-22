@@ -27,7 +27,7 @@ function onProvisioned(token: string) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="min-h-screen bg-brand-bg text-brand-text font-sans flex items-center justify-center">
     <div v-if="!ready" class="text-gray-400 text-sm">Carregando...</div>
     <SetupDevice
       v-else-if="!isDeviceProvisioned()"

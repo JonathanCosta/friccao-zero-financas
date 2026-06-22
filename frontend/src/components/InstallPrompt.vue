@@ -92,13 +92,13 @@ onUnmounted(() => {
       v-if="!isIOS"
       class="flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-lg border border-gray-200 text-sm"
     >
-      <Download class="w-5 h-5 text-primary-600 shrink-0" />
+        <Download class="w-5 h-5 text-brand-sync shrink-0" />
       <span class="flex-1 text-gray-700">
-        Instale o <strong>Financeiro</strong> para acesso offline
+        Instale o <strong>dimdim</strong> para acesso offline
       </span>
       <button
         @click="install"
-        class="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-xs font-medium hover:bg-primary-700 transition"
+        class="px-3 py-1.5 bg-brand-sync text-white rounded-lg text-xs font-medium hover:bg-brand-sync/80 transition"
       >
         Instalar
       </button>
@@ -112,9 +112,9 @@ onUnmounted(() => {
       class="px-4 py-3 bg-white rounded-xl shadow-lg border border-gray-200 text-sm"
     >
       <div class="flex items-center gap-3">
-        <Download class="w-5 h-5 text-primary-600 shrink-0" />
+        <Download class="w-5 h-5 text-brand-sync shrink-0" />
         <span class="flex-1 text-gray-700">
-          Instale o <strong>Financeiro</strong> no seu iPhone
+          Instale o <strong>dimdim</strong> no seu iPhone
         </span>
         <button @click="dismiss" class="text-gray-400 hover:text-gray-600 transition shrink-0" aria-label="Fechar">
           <X class="w-4 h-4" />
@@ -122,7 +122,7 @@ onUnmounted(() => {
       </div>
       <button
         @click="showIOSInstructions = !showIOSInstructions"
-        class="mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium transition"
+        class="mt-2 text-xs text-brand-sync hover:text-brand-sync/80 font-medium transition"
       >
         {{ showIOSInstructions ? 'Ocultar instruções' : 'Ver instruções' }}
       </button>

@@ -1,4 +1,4 @@
-# Financeiro PWA
+# dimdim
 
 Aplicativo de controle financeiro pessoal **PWA** com arquitetura **Local-First**. Funciona 100% offline e sincroniza com Google Sheets via Google Apps Script.
 
@@ -11,7 +11,7 @@ Aplicativo de controle financeiro pessoal **PWA** com arquitetura **Local-First*
 | Camada | Tecnologia |
 |--------|-----------|
 | **Frontend** | Vue 3 (Composition API) + TypeScript + Vite |
-| **Estilização** | Tailwind CSS (tema verde `#16a34a`) |
+| **Estilização** | Tailwind CSS (Brand Book: Off-white, Verde-oliva, Vermelho-tijolo) |
 | **Banco Local** | Dexie.js (IndexedDB) — fonte primária |
 | **Gráficos** | ApexCharts + vue3-apexcharts |
 | **Ícones** | lucide-vue-next |

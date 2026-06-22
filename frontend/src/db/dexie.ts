@@ -90,6 +90,31 @@ export class FinanceiroDB extends Dexie {
     })
   }
 
+  async softDeleteMovimentacoesDoMes(ano: number, mes: number): Promise<number> {
+    const prefix = `${ano}-${String(mes).padStart(2, '0')}`
+    const all = await this.movimentacoes.toArray()
+    const ids = all.filter(m => m.data_transacao.startsWith(prefix) && m.deletado_em === null).map(m => m.transacao_id)
+    if (ids.length === 0) return 0
+    const now = nowISO()
+    await this.movimentacoes
+      .where('transacao_id')
+      .anyOf(ids)
+      .modify({ deletado_em: now, atualizado_em: now })
+    return ids.length
+  }
+
+  async softDeleteAllMovimentacoes(): Promise<number> {
+    const all = await this.movimentacoes.toArray()
+    const ids = all.filter(m => m.deletado_em === null).map(m => m.transacao_id)
+    if (ids.length === 0) return 0
+    const now = nowISO()
+    await this.movimentacoes
+      .where('transacao_id')
+      .anyOf(ids)
+      .modify({ deletado_em: now, atualizado_em: now })
+    return ids.length
+  }
+
   async getCategorias(tipo?: 'entrada' | 'saida' | 'misto'): Promise<Categoria[]> {
     if (tipo) {
       return this.categorias.where('tipo').equals(tipo).toArray()

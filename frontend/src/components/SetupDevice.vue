@@ -74,16 +74,16 @@ function continuarOffline() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 to-primary-800 p-4">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-sync to-brand-lock p-4">
     <div class="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8">
       <div class="flex justify-center mb-6">
-        <div class="bg-primary-100 p-3 rounded-full">
-          <KeyRound class="w-8 h-8 text-primary-600" />
+        <div class="bg-brand-sync/10 p-3 rounded-full">
+          <KeyRound class="w-8 h-8 text-brand-sync" />
         </div>
       </div>
 
       <h1 class="text-2xl font-bold text-center text-gray-900 mb-2">
-        Financeiro
+        dimdim
       </h1>
       <p class="text-sm text-center text-gray-500 mb-2">
         Digite a chave de instalação fornecida pelo administrador
@@ -107,7 +107,7 @@ function continuarOffline() {
             placeholder="Chave de instalação"
             autocomplete="off"
             maxlength="100"
-            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-center text-lg tracking-widest"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-sync focus:ring-2 focus:ring-brand-sync/20 outline-none transition text-center text-lg tracking-widest"
             :disabled="loading"
           />
         </div>
@@ -117,7 +117,7 @@ function continuarOffline() {
         <button
           type="submit"
           :disabled="loading"
-          class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+          class="w-full py-3 px-4 bg-brand-sync hover:bg-brand-sync/80 text-white font-medium rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
           {{ loading ? 'Validando...' : 'Confirmar' }}

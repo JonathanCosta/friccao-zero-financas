@@ -1,4 +1,4 @@
-# Financeiro PWA
+# dimdim
 
 ## Comandos
 
@@ -26,7 +26,7 @@
 - **Toast** "Registro salvo!" some após 2s — testes precisam capturar nessa janela.
 - **Soft delete:** `deletado_em` timestamp, registros nunca são removidos fisicamente.
 - **IDs:** UUIDv4 gerado no frontend via `crypto.randomUUID()`.
-- **Locale:** pt-BR, tema verde (`#16a34a`).
+- **Locale:** pt-BR, paleta terrosa (Brand Book).
 - **GAS sheets:** sempre acessadas por `getSheetByName('nome')`, nunca `getSheets()[0]`.
 
 ## Testes E2E

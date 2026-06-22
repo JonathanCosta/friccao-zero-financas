@@ -4,23 +4,26 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#16a34a" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#FFF5F5" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <!-- vite-plugin-pwa injeta o manifest link no build de produção -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
       script-src 'self';
-      style-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       connect-src 'self' https://script.google.com https://script.googleusercontent.com;
       img-src 'self';
-      font-src 'self';
+      font-src 'self' https://fonts.gstatic.com;
       manifest-src 'self';
       frame-ancestors 'none';
       base-uri 'self';
       form-action 'none'
     ">
-    <title>Financeiro</title>
+    <title>dimdim</title>
   </head>
   <body>
     <div id="app"></div>

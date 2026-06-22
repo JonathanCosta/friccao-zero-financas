@@ -94,10 +94,10 @@ function handleComplete(pinValue: string) {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div class="fixed inset-0 bg-brand-lock/50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
-      <div class="bg-primary-100 p-3 rounded-full inline-flex mb-4">
-        <Lock class="w-6 h-6 text-primary-600" />
+      <div class="bg-brand-lock/10 p-3 rounded-full inline-flex mb-4">
+        <Lock class="w-6 h-6 text-brand-lock" />
       </div>
 
       <h2 class="text-lg font-bold text-gray-900 mb-1">
@@ -124,11 +124,11 @@ function handleComplete(pinValue: string) {
           maxlength="1"
           autocomplete="one-time-code"
           class="w-12 h-14 text-center text-xl font-bold border-2 rounded-xl outline-none transition"
-          :class="erro ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-primary-500'"
+          :class="erro ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-brand-lock'"
         />
       </div>
 
-      <p v-if="erro" class="text-red-500 text-sm flex items-center justify-center gap-1 mb-2">
+      <p v-if="erro" class="text-brand-expense text-sm flex items-center justify-center gap-1 mb-2">
         <CircleAlert class="w-4 h-4" />
         {{ erro }}
       </p>

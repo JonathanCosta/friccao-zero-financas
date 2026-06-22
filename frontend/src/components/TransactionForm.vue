@@ -105,7 +105,7 @@ function onKeydown(e: KeyboardEvent) {
             inputmode="numeric"
             placeholder="R$ 0,00"
             autocomplete="off"
-            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-lg font-semibold"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-income focus:ring-2 focus:ring-brand-income/20 outline-none transition text-lg font-semibold"
           />
         </div>
       </div>
@@ -115,8 +115,8 @@ function onKeydown(e: KeyboardEvent) {
         class="px-4 py-3 rounded-lg border font-medium text-sm transition flex items-center gap-1.5 min-w-[90px] justify-center"
         :class="
           tipo === 'saida'
-            ? 'bg-red-50 border-red-200 text-red-600'
-            : 'bg-green-50 border-green-200 text-green-600'
+            ? 'bg-brand-expense/10 border-brand-expense/30 text-brand-expense'
+            : 'bg-brand-income/10 border-brand-income/30 text-brand-income'
         "
       >
         <ArrowDown v-if="tipo === 'saida'" class="w-4 h-4" />
@@ -131,7 +131,7 @@ function onKeydown(e: KeyboardEvent) {
       placeholder="Descrição"
       autocomplete="off"
       maxlength="100"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-sm"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-income focus:ring-2 focus:ring-brand-income/20 outline-none transition text-sm"
     />
 
     <CategoryAutocomplete
@@ -144,15 +144,15 @@ function onKeydown(e: KeyboardEvent) {
     <input
       v-model="data"
       type="date"
-      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition text-sm"
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-brand-income focus:ring-2 focus:ring-brand-income/20 outline-none transition text-sm"
     />
 
-    <p v-if="erro" class="text-red-500 text-sm">{{ erro }}</p>
+    <p v-if="erro" class="text-brand-expense text-sm">{{ erro }}</p>
 
     <button
       type="submit"
       :disabled="salvando"
-      class="w-full py-3.5 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2 text-base"
+      class="w-full py-3.5 px-4 bg-brand-income hover:bg-brand-income/80 text-white font-medium rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2 text-base"
     >
       <Save class="w-5 h-5" />
       {{ salvando ? 'Salvando...' : 'Salvar' }}

@@ -35,7 +35,7 @@ watch(
   >
     <div
       class="flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium"
-      :class="type === 'error' ? 'bg-red-500 text-white' : 'bg-primary-600 text-white'"
+      :class="type === 'error' ? 'bg-brand-expense text-white' : 'bg-brand-income text-white'"
     >
       <CircleCheck v-if="type !== 'error'" class="w-4 h-4" />
       <CircleX v-else class="w-4 h-4" />
