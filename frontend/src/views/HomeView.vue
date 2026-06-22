@@ -34,7 +34,10 @@ function onAuthorized() {
 <template>
   <div class="min-h-screen flex flex-col">
     <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-      <h1 class="text-lg font-bold text-brand-text">dimdim</h1>
+      <div class="flex items-center gap-3">
+        <img src="/logo_transparent.png" alt="dimdim logo" class="w-10 h-10 object-contain drop-shadow-sm contrast-125 saturate-150" />
+        <h1 class="text-2xl font-bold text-brand-text tracking-tight">dimdim</h1>
+      </div>
       <button
         @click="irDashboard"
         class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-sync transition px-3 py-1.5 rounded-lg hover:bg-brand-sync/10"

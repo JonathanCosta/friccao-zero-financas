@@ -82,9 +82,10 @@ function continuarOffline() {
         </div>
       </div>
 
-      <h1 class="text-2xl font-bold text-center text-gray-900 mb-2">
-        dimdim
-      </h1>
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <img src="/logo_transparent.png" alt="dimdim logo" class="w-10 h-10 object-contain drop-shadow-sm contrast-125 saturate-150" />
+        <h1 class="text-2xl font-bold text-brand-text tracking-tight">dimdim</h1>
+      </div>
       <p class="text-sm text-center text-gray-500 mb-2">
         Digite a chave de instalação fornecida pelo administrador
       </p>
